@@ -24,13 +24,51 @@ echo "Pinging $THMDCIP to ensure reachability..."
 if ping -c 3 -W 1 "$THMDCIP" > /dev/null; then
     echo "$THMDCIP is reachable."
 
-    # The service to restart depends on which service consumes /etc/resolv-dnsmasq.
-    # If dnsmasq is using it, restart dnsmasq.
-    # If systemd-resolved is managing it, then systemd-resolved might be right,
-    # but often systemd-resolved creates /etc/resolv.conf and dnsmasq uses it.
-    # Assuming dnsmasq is directly configured to use resolv-dnsmasq:
-    echo "Restarting dnsmasq service..."
+    echo "Attempting to restart dnsmasq service..."
+    # Try to restart dnsmasq service
     sudo systemctl restart dnsmasq
+
+    # Check dnsmasq service status after the restart attempt
+    DNSMASQ_STATUS=$(systemctl status dnsmasq.service 2>&1)
+
+    # Check if dnsmasq failed and if the reason is "Address already in use"
+    if echo "$DNSMASQ_STATUS" | grep -q "failed to create listening socket for port 53: Address already in use"; then
+        echo "Detected 'Address already in use' error for dnsmasq. Attempting to fix by disabling systemd-resolved DNSStubListener."
+
+        # Backup resolved.conf before modifying
+        if [ ! -f "/etc/systemd/resolved.conf.bak" ]; then
+            sudo cp /etc/systemd/resolved.conf /etc/systemd/resolved.conf.bak
+            echo "Backed up /etc/systemd/resolved.conf to /etc/systemd/resolved.conf.bak"
+        fi
+
+        # Modify /etc/systemd/resolved.conf to disable DNSStubListener
+        # Use sed to uncomment/set DNSStubListener=no
+        sudo sed -i '/^#\?DNSStubListener=yes/cDNSStubListener=no' /etc/systemd/resolved.conf
+        echo "Set DNSStubListener=no in /etc/systemd/resolved.conf"
+
+        # Restart systemd-resolved to apply changes
+        echo "Restarting systemd-resolved service..."
+        sudo systemctl restart systemd-resolved
+        echo "systemd-resolved restarted. Port 53 should now be free for dnsmasq."
+
+        # Try restarting dnsmasq again
+        echo "Attempting to restart dnsmasq service again..."
+        sudo systemctl restart dnsmasq
+        
+        # Re-check dnsmasq status after the fix attempt
+        DNSMASQ_STATUS=$(systemctl status dnsmasq.service 2>&1)
+        if echo "$DNSMASQ_STATUS" | grep -q "Active: active (running)"; then
+            echo "dnsmasq service is now active and running."
+        else
+            echo "Warning: dnsmasq service is still not running after fix attempt. Manual intervention may be required."
+            echo "See 'systemctl status dnsmasq.service' and 'journalctl -xe' for details."
+        fi
+    elif echo "$DNSMASQ_STATUS" | grep -q "Active: active (running)"; then
+        echo "dnsmasq service is active and running."
+    else
+        echo "Warning: dnsmasq service failed to restart for an unknown reason."
+        echo "See 'systemctl status dnsmasq.service' and 'journalctl -xe' for details."
+    fi
 
     # If you are absolutely sure systemd-resolved is the consumer:
     # echo "Restarting systemd-resolved service..."
