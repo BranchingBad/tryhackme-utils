@@ -1,4 +1,7 @@
 # TryHackMe Utilities 🛠️
+
+## 🚀 Overview
+
 Welcome to TryHackMe Utilities, a collection of handy scripts and tools designed to streamline and enhance your TryHackMe learning experience. Whether you're a beginner just starting your cybersecurity journey or an experienced hacker looking to optimize your workflow, these utilities aim to make your time on TryHackMe more efficient and enjoyable.
 
 This repository provides various scripts to automate common tasks, fetch useful information, and generally simplify interactions with the TryHackMe platform.
@@ -18,5 +21,6 @@ IP Address and FQDN: You can modify the THMDCIP and THM_FQDN variables at the to
 
 Permissions: Ensure your user has sudo privileges to run this script successfully.
 
-## 📄 License:
+## 📄 License
+
 Distributed under the GPL-3.0 license See LICENSE for more information.
