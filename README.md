@@ -6,7 +6,7 @@ Welcome to TryHackMe Utilities, a collection of handy scripts and tools designed
 
 This repository provides various scripts to automate common tasks, fetch useful information, and generally simplify interactions with the TryHackMe platform.
 
-## ✨ set-dns Features
+## ✨ set-dns Features (Breaching Active Directory - Task 1 - Introduction to AD Breaches)
 
 DNS Resolver Configuration and Test Script
 This script automates the process of adding a specific nameserver (10.200.80.101) to your dnsmasq configuration file (/etc/resolv-dnsmasq), ensures the nameserver is reachable, restarts the dnsmasq service, and then verifies if a specific Fully Qualified Domain Name (FQDN), thmdc.za.tryhackme.com, can be resolved using the newly configured DNS.
@@ -21,7 +21,7 @@ IP Address and FQDN: You can modify the THMDCIP and THM_FQDN variables at the to
 
 Permissions: Ensure your user has sudo privileges to run this script successfully.
 
-## ✨ setup-ldap Features
+## ✨ setup-ldap Features (Breaching Active Directory - Task 4 - LDAP Bind Credentials)
 
 This Bash script automates the fundamental installation and initial configuration of an **OpenLDAP (slapd) server** on **Ubuntu 20.04 (Focal Fossa)**. It streamlines several steps commonly performed during a basic OpenLDAP setup, making it quicker to get a working LDAP instance.
 
