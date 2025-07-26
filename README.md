@@ -21,6 +21,18 @@ IP Address and FQDN: You can modify the THMDCIP and THM_FQDN variables at the to
 
 Permissions: Ensure your user has sudo privileges to run this script successfully.
 
+## ✨ setup-ldap Features
+
+This Bash script automates the fundamental installation and initial configuration of an **OpenLDAP (slapd) server** on **Ubuntu 20.04 (Focal Fossa)**. It streamlines several steps commonly performed during a basic OpenLDAP setup, making it quicker to get a working LDAP instance.
+
+💡Important Notes:
+
+This script provides a **basic setup** only. Further configuration (e.g., adding schemas, organizational units, users) will need to be done manually after the script completes.
+
+The script includes `dpkg-reconfigure slapd` and the `olcSaslSecProps.ldif` application twice, mirroring the provided source. While not always strictly necessary, this ensures fidelity to the original process.
+
+Error handling is included to stop the script if critical commands fail.
+
 ## 📄 License
 
 Distributed under the GPL-3.0 license See LICENSE for more information.
